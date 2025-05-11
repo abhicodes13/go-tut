@@ -15,7 +15,7 @@ import (
 )
 
 type Todo struct {
-	ID primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	ID primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	Completed bool `json:"completed"`
 	Body string `json:"body"`
 }
@@ -25,10 +25,11 @@ var collection *mongo.Collection
 func main (){
 
 	fmt.Println("Hello World")
-	err := godotenv.Load(".env")
+	if os.Getenv("ENV") != "production"{
+			err := godotenv.Load(".env")
 	if err != nil{
 		log.Fatal(err)
-	}
+	}}
 	MONGODB_URI := os.Getenv("MONGODB_URI")
 	clientOptions := options.Client().ApplyURI(MONGODB_URI)
 	client,err := mongo.Connect(context.Background(), clientOptions)
@@ -47,6 +48,7 @@ func main (){
      collection = client.Database("golang_db").Collection("todos")
 
      app := fiber.New()
+	
 
    app.Get("/api/todos", getTodos)
    app.Post("/api/todos", createTodo)
@@ -57,6 +59,10 @@ func main (){
 
  if port == ""{
 	port = "4000"
+ }
+
+ if os.Getenv("ENV")=="production"{
+	app.Static("/", "./client/dist")
  }
  log.Fatal(app.Listen(":"+ port))
 
