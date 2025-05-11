@@ -1,0 +1,11 @@
+[settings]
+  build_command = "go build -o ./tmp/main ."
+  binary_path = "tmp/main"
+  include_extensions = ["go"]
+  exclude_directories = ["tmp", "vendor"]
+  exclude_files = []
+  build_delay = 1000
+  log_file = "air.log"
+
+[ui]
+  primary_color = "yellow"
